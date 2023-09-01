@@ -52,8 +52,8 @@ FROM '/Users/paulayang/csv-review/characteristics.csv' DELIMITER ',' CSV HEADER;
 
 -- create index
 
--- CREATE INDEX idx_reviews_id ON reviews(id);
--- CREATE INDEX idx_characteristics_id ON characteristics(id);
+CREATE INDEX idx_product_id_on_reviews ON reviews(product_id);
+CREATE INDEX idx_product_id_on_characteristics ON characteristics(product_id);
 
 
 -- Insert data for characteristic_reviews

@@ -61,6 +61,7 @@ app.get('/reviews', (req, res) => {
 
 //GET review meta
 app.get('/reviews/meta', (req, res) => {
+    //req.query takes what after ? where req.params take what between ? and last /
     const productId = req.query.product_id;
 
     const ratingsQuery = `
@@ -124,10 +125,73 @@ app.get('/reviews/meta', (req, res) => {
 });
 
 //POST
+app.post('/reviews', (req, res) => {
+  const { product_id, rating, date, summary, body, recommend, reviewer_name, reviewer_email, response} = req.body;
 
+  if(!product_id || !rating || !date || !summary || !body || recommend == null || !reviewer_name || !reviewer_email) {
+      return res.status(400).send('Missing required fields/');
+  }
 
+  const query = `
+      INSERT INTO reviews (product_id, rating, date, summary, body, recommend, reviewer_name, reviewer_email, response, helpfuness)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      RETURNING id;
+  `;
+
+  pool.query(query, [product_id, rating, date, summary, body, recommend, reviewer_name, reviewer_email, response, helpfulness || null])
+      .then(result => {
+          res.status(201).send({ message: 'Review created successfully!', reviewId: result.rows[0].id });
+      })
+      .catch(err => {
+          console.error(err);
+          res.status(500).send('Server Error');
+      });
+});
 
 //PUT
+app.put('/reviews/:review_id/helpful', (req, res) => {
+  const reviewId = req.params.review_id;
+  const query = `
+      UPDATE reviews
+      SET helpfulness = helpfulness + 1
+      WHERE id = $1;
+  `;
+
+  pool.query(query, [reviewId])
+      .then(result => {
+          if (result.rowCount === 0) {
+              return res.status(404).send('Review not found');
+          }
+          res.send({ message: 'Review saved', updatedHelpfulness: result.rows[0].helpfulness });
+      })
+      .catch(err => {
+          console.error(err);
+          res.status(500).send('Server Error');
+      });
+});
+
+
+app.put('/reviews/:review_id/report', (req, res) => {
+  const reviewId = req.params.review_id;
+  const query = `
+      UPDATE reviews
+      SET reported = TRUE
+      WHERE id = $1;
+  `;
+  pool.query(query, [reviewId])
+      .then(result => {
+          if (result.rowCount === 0) {
+              return res.status(404).send('Review not found.');
+          }
+          res.send({ message: 'Review reported!', reportedStatus: result.rows[0].reported });
+      })
+      .catch(err => {
+          console.error(err);
+          res.status(500).send('Server Error');
+      });
+});
+
+
 
 
 app.listen(PORT, () => {
