@@ -40,8 +40,6 @@ CREATE TABLE IF NOT EXISTS reviews_photos (
 );
 
 
-
-
 -- Load data into main tables that don't have foreign key constraints
 
 COPY reviews(id, product_id, rating, date, summary, body, recommend, reported, reviewer_name, reviewer_email, response, helpfulness)
@@ -50,28 +48,11 @@ FROM '/Users/paulayang/csv-review/reviews.csv' DELIMITER ',' CSV HEADER;
 COPY characteristics(id, product_id, name)
 FROM '/Users/paulayang/csv-review/characteristics.csv' DELIMITER ',' CSV HEADER;
 
--- create index
-
-CREATE INDEX idx_product_id_on_reviews ON reviews(product_id);
-CREATE INDEX idx_product_id_on_characteristics ON characteristics(product_id);
-
 
 -- Insert data for characteristic_reviews
 COPY characteristic_reviews(id, characteristic_id, review_id, value)
 FROM '/Users/paulayang/csv-review/characteristic_reviews.csv' DELIMITER ',' CSV HEADER;
 
--- -- Check for characteristic id and review id in the main tables
--- DELETE FROM characteristic_reviews
--- WHERE characteristic_id NOT IN (SELECT id FROM characteristics)
--- OR review_id NOT IN (SELECT id FROM reviews);
-
--- Insert data for reviews_photos
 COPY reviews_photos(id, review_id, url)
 FROM '/Users/paulayang/csv-review/reviews_photos.csv' DELIMITER ',' CSV HEADER;
 
--- -- Check for review id in the main reviews table
--- DELETE FROM reviews_photos
--- WHERE review_id NOT IN (SELECT id FROM reviews);
-
--- DROP INDEX idx_reviews_id;
--- DROP INDEX idx_characteristics_id;
