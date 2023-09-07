@@ -25,10 +25,10 @@ pool.on('error', (err) => {
 //middleware
 app.use(express.json());
 
-// //test
-// app.get('/test', (req, res) => {
-//   res.send('Test endpoint works!');
-// });
+app.use(express.static(__dirname));
+app.get('/loaderio-68422e35b62841a7ca7aa690bfe55d79.txt', (req, res) => {
+    res.sendFile(__dirname + '/loaderio-68422e35b62841a7ca7aa690bfe55d79.txt');
+});
 
 
 //endpoints
