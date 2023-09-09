@@ -26,8 +26,8 @@ pool.on('error', (err) => {
 app.use(express.json());
 
 app.use(express.static(__dirname));
-app.get('/loaderio-69e14479baf34b88e0928f8113f05105.txt', (req, res) => {
-    res.sendFile(__dirname + '/loaderio-69e14479baf34b88e0928f8113f05105.txt');
+app.get('/loaderio-3b62859633c98d70aa162270b9935612.txt', (req, res) => {
+    res.sendFile(__dirname + '/loaderio-3b62859633c98d70aa162270b9935612.txt');
 });
 
 
